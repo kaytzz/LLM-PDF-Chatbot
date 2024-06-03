@@ -37,26 +37,30 @@ with st.sidebar:
         cohere_api_key = st.secrets["COHERE_API_KEY"]
         # st.write("API key found.")
     else:
-        cohere_api_key = st.text_input("Cohere API Key", key="chatbot_api_key", type="password")
+        cohere_api_key = st.text_input("Cohere API Key", key="lCJHRdySFOQmCMrb6cD4QUQbMwev3ldgJwa6srCu", type="password")
         st.markdown("[Get a Cohere API Key](https://dashboard.cohere.ai/api-keys)")
     
     my_documents = []
-    selected_doc = st.selectbox("Select your departure location", ["Tai Tam Middle School", "Repulse Bay"])
-    if selected_doc == "Tai Tam Bus Schedule":
-        my_documents = pdf_to_documents('docs/HKISTaiTamBusSchedule.pdf')
-    elif selected_doc == "Repulse Bay Bus Schedule":    
-        my_documents = pdf_to_documents('docs/HKISRepulseBayBusSchedule.pdf')
-    else:
-        my_documents = pdf_to_documents('docs/HKISTaiTamBusSchedule.pdf')
+    # selected_doc = st.selectbox("Enter your response:", ["Tai Tam Middle School", "Repulse Bay"])
+    # if selected_doc == "lang":
+    #     my_documents = pdf_to_documents('docs/HKISTaiTamBusSchedule.pdf')
+    # elif selected_doc == "Repulse Bay Bus Schedule":    
+    #     my_documents = pdf_to_documents('docs/HKISRepulseBayBusSchedule.pdf')
+    # else:
+    #     my_documents = pdf_to_documents('docs/HKISTaiTamBusSchedule.pdf')
 
     # st.write(f"Selected document: {selected_doc}")
+my_documents += pdf_to_documents('docs/lang.pdf')
+my_documents += pdf_to_documents('docs/RUBRIC.pdf')
+
+print(my_documents)
 
 # Set the title of the Streamlit app
-st.title("💬 HKIS Bus Helper")
+st.title("📚 2023 AP LANGUAGE & COMPOSITION FRQ ESSAY GRADER")
 
 # Initialize the chat history with a greeting message
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [{"role": "assistant", "text": "Hi! I'm the HKIS Bus Helper. Select your location from the dropdown then ask me where you'd like to go and I'll do my best to find a school bus that will get you there."}]
+    st.session_state["messages"] = [{"role": "assistant", "text":"Please enter your sample response to the synthesis essay prompt from the AP English Language & Composition exam from 2023: "}]
 
 # Display the chat messages
 for msg in st.session_state.messages:
@@ -75,13 +79,12 @@ if prompt := st.chat_input():
     # Display the user message in the chat window
     st.chat_message("user").write(prompt)
 
-    preamble = """You are the Hong Kong International School Bus Helper bot. You help people understand the bus schedule.
-    When someone mentions a location you should refer to the document to see if there are buses that stop nearby.
-    Respond with advice about which buses will stop the closest to their destination, the name of the stop they 
-    should get off at and the name of the suburb that the stop is located in. 
-    Finish with brief instructions for how they can get from the stop to their destination.
-    Group the buses you recommend by the time they depart. If the document is about Tai Tam then group your recommendations by the following departure times: 3:15, 4:20 and 5pm. 
-    If the document is about repulse bay then state the departure time is 4pm.
+    preamble = """ You are the AP Grader Bot. You help people by grading their work according to College Board's Advanced Placement test guidelines and rubrics. 
+    Using the essay prompt document and the rubric document provided to you, you will grade the input, which is the student's essay, on a scale of 0-6. 
+    No points are deducted for an answer, but they may only be added if they fulfill the requirements in the rubric according to the documents.
+    Respond with advice on what the student should add and remove from their essay, as well as how they can improve the essay to meet the requirements of getting all the points on the rubric. 
+    Finish with some words of encouragement and some more remarks about their essay to help the student improve it. 
+    
     """
 
     # Send the user message and pdf text to the model and capture the response
